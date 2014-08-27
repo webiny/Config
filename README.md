@@ -79,6 +79,7 @@ $config->mergeWith([$config2, ['group2' => ['custom' => 'data']], $config3]);
 
 Resources
 ---------
+
 To run unit tests, you need to use the following command:
 
     $ cd path/to/Webiny/Component/Config/
