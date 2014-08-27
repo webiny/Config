@@ -30,7 +30,7 @@
 	},
 	"extras": {
 		"branches": {
-			"dev-master": "~0.9"
+			"dev-master": "~0.10"
 		}
 	}
 }
