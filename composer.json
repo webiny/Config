@@ -1,0 +1,36 @@
+{
+	"name": "webiny/config",
+	"type": "library",
+	"description": "Webiny Config Component",
+	"keywords": ["config", "yaml", "ini"],
+	"homepage": "http://www.webiny.com/",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Sven Al Hamad",
+			"email": "sven@webiny.com"
+		},
+		{
+			"name": "Pavel Denisjuk",
+			"email": "pavel@webiny.com"
+		}
+	],
+	"minimum-stability": "dev",
+	"require": {
+		"php": ">=5.4.*",
+		"symfony/yaml": "master-dev"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "4.1.*"
+	},
+	"autoload": {
+		"psr-4": {
+			"Webiny\\Component\\Config\\": ""
+		}
+	},
+	"extras": {
+		"branches": {
+			"dev-master": "~0.9"
+		}
+	}
+}
