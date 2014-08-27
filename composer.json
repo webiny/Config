@@ -17,7 +17,7 @@
 	],
 	"minimum-stability": "dev",
 	"require": {
-		"php": ">=5.4.*",
+		"php": ">=5.4.0",
 		"symfony/yaml": "master-dev"
 	},
 	"require-dev": {
