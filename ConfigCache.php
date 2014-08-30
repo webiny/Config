@@ -15,7 +15,7 @@ use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 use Webiny\Component\StdLib\ValidatorTrait;
 
 /**
- * ConfigCache class holds caches data and holds info about original resource
+ * ConfigCache class holds caches data and holds info about original resource.
  *
  * @package         Webiny\Component\Config
  */

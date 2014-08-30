@@ -24,7 +24,7 @@ use Webiny\Component\StdLib\ValidatorTrait;
 use Webiny\Component\StdLib\StdObjectTrait;
 
 /**
- * ConfigObject class holds config data in an OO way
+ * ConfigObject class holds config data in an OO way.
  *
  * @package         Webiny\Component\Config
  */

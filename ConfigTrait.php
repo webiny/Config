@@ -10,7 +10,7 @@
 namespace Webiny\Component\Config;
 
 /**
- * A library of config functions
+ * Helper trait to get the config instance.
  *
  * @package         Webiny\Component\Config
  */
