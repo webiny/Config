@@ -3,6 +3,29 @@ Config Component
 `Config` component creates `ConfigObject` instances from config files.
 Currently supported formats: INI, JSON, PHP, YAML and custom drivers.
 
+Install the component
+---------------------
+The best way to install the component is using Composer.
+
+```json
+{
+    "require": {
+        "webiny/config": "dev-master"
+    }
+}
+```
+For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/config).
+
+Once you have your `composer.json` file in place, just run the install command.
+
+    $ php composer.phar install
+
+To learn more about Composer, and how to use it, please visit [this link](https://getcomposer.org/doc/01-basic-usage.md).
+
+Alternatively, you can also do a `git checkout` of the repo.
+
+## Usage
+
 To use `Config` component you will need a config file.
 
 Example INI:
