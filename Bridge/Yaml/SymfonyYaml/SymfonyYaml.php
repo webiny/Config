@@ -83,7 +83,8 @@ class SymfonyYaml implements YamlInterface
         if (!$this->isString($destination) && !$this->isStringObject($destination) && !$this->isFileObject($destination
             )
         ) {
-            throw new SymfonyYamlException('SymfonyYaml Bridge - destination argument must be a string, StringObject or FileObject!');
+            throw new SymfonyYamlException('SymfonyYaml Bridge - destination argument must be a string, StringObject or FileObject!'
+            );
         }
 
         try {
@@ -118,9 +119,10 @@ class SymfonyYaml implements YamlInterface
         }
 
         throw new SymfonyYamlException('SymfonyYaml Bridge - Unable to parse given resource of type %s', [
-            gettype($this->_resource
-            )
-        ]);
+                gettype($this->_resource
+                )
+            ]
+        );
     }
 
     /**

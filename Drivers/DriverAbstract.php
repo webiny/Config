@@ -10,10 +10,8 @@ namespace Webiny\Component\Config\Drivers;
 use Webiny\Component\Config\ConfigException;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
-use Webiny\Component\StdLib\StdObject\FileObject\FileObject;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
-use Webiny\Component\StdLib\ValidatorTrait;
 
 /**
  * Abstract Driver class
@@ -133,15 +131,13 @@ abstract class DriverAbstract
             $destination = StdObjectWrapper::toString($destination);
         }
 
-        if (!$this->isNull($destination)) {
-            if (!file_exists($destination)) {
-                throw new ConfigException(ConfigException::CONFIG_FILE_DOES_NOT_EXIST);
-            }
-        } else {
+        if ($this->isNull($destination)) {
             if ($this->isNull($this->_resource)) {
-                throw new ConfigException('No valid resource was found to use as config target file! Specify a $destination argument or load your Config using a file resource!');
+                throw new ConfigException('No valid resource was found to use as config target file! Specify a $destination argument or load your Config using a file resource!'
+                );
+            } else {
+                $destination = $this->_resource;
             }
-            $destination = $this->_resource;
         }
 
         if (file_put_contents($destination, $this->_getString())) {
@@ -158,7 +154,8 @@ abstract class DriverAbstract
     protected function _validateResource()
     {
         if (self::isNull($this->_resource)) {
-            throw new ConfigException('Config resource can not be NULL! Please provide a valid file path, config string or PHP array.');
+            throw new ConfigException('Config resource can not be NULL! Please provide a valid file path, config string or PHP array.'
+            );
         }
 
         if ($this->isArray($this->_resource)) {
@@ -175,7 +172,8 @@ abstract class DriverAbstract
         // Perform string checks
         $this->_resource = $this->str($this->_resource);
         if ($this->_resource->trim()->length() == 0) {
-            throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.');
+            throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.'
+            );
         }
     }
 

@@ -179,7 +179,8 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     public function save()
     {
         if ($this->_resourceType != ConfigObject::FILE_RESOURCE) {
-            throw new ConfigException('ConfigObject was not created from a file resource and thus can not be saved directly!');
+            throw new ConfigException('ConfigObject was not created from a file resource and thus can not be saved directly!'
+            );
         }
 
         $driver = new $this->_driverClass($this->toArray());
@@ -244,7 +245,8 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
         if (!$this->isArray($resource) && !$this->isInstanceOf($resource, $driverAbstractClassName
             ) && !$this->isArrayObject($resource)
         ) {
-            throw new ConfigException("ConfigObject resource must be a valid array, $arrayObjectClassName or $driverAbstractClassName");
+            throw new ConfigException("ConfigObject resource must be a valid array, $arrayObjectClassName or $driverAbstractClassName"
+            );
         }
 
 
@@ -487,7 +489,8 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
         } elseif ($this->isInstanceOf($config, $this)) {
             $configs = [$config];
         } else {
-            throw new ConfigException('Invalid parameter passed to ConfigObject mergeWith($config) method! Expecting a ConfigObject or array.');
+            throw new ConfigException('Invalid parameter passed to ConfigObject mergeWith($config) method! Expecting a ConfigObject or array.'
+            );
         }
 
         /** @var ConfigObject $value */

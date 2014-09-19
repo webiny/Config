@@ -66,9 +66,10 @@ class Yaml implements YamlInterface
                 }
             }
             throw new YamlException(ExceptionAbstract::MSG_INVALID_ARG, [
-                '$driver',
-                self::$_driverInterface
-            ]);
+                    '$driver',
+                    self::$_driverInterface
+                ]
+            );
         }
         self::$_customDriver = $driver;
 

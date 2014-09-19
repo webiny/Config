@@ -9,10 +9,8 @@
 
 namespace Webiny\Component\Config;
 
-use Webiny\Component\Cache\CacheTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
-use Webiny\Component\StdLib\ValidatorTrait;
 
 /**
  * ConfigCache class holds caches data and holds info about original resource.
@@ -21,7 +19,7 @@ use Webiny\Component\StdLib\ValidatorTrait;
  */
 class ConfigCache
 {
-    use StdLibTrait, CacheTrait;
+    use StdLibTrait;
 
     private static $_configCache = null;
 
