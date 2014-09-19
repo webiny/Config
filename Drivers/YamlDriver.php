@@ -44,9 +44,10 @@ class YamlDriver extends DriverAbstract
     {
         if (!$this->isNumber($indent)) {
             throw new ConfigException(ConfigException::MSG_INVALID_ARG, [
-                '$indent',
-                'integer'
-            ]);
+                    '$indent',
+                    'integer'
+                ]
+            );
         }
         $this->_indent = $indent;
 

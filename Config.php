@@ -9,7 +9,6 @@
 
 namespace Webiny\Component\Config;
 
-use Webiny\Component\Cache\CacheTrait;
 use Webiny\Component\Config\Drivers\DriverAbstract;
 use Webiny\Component\Config\Drivers\IniDriver;
 use Webiny\Component\Config\Drivers\JsonDriver;
@@ -18,8 +17,6 @@ use Webiny\Component\Config\Drivers\YamlDriver;
 use Webiny\Component\StdLib\SingletonTrait;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
-use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
-use Webiny\Component\StdLib\ValidatorTrait;
 
 /**
  * Config class creates config objects from files, strings and arrays.
