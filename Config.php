@@ -2,9 +2,7 @@
 /**
  * Webiny Framework (http://www.webiny.com/framework)
  *
- * @link      http://www.webiny.com/wf-snv for the canonical source repository
- * @copyright Copyright @ 2009-2013 Webiny LTD. (http://www.webiny.com)
- * @license   http://www.webiny.com/framework/license
+ * @copyright Copyright Webiny LTD
  */
 
 namespace Webiny\Component\Config;
@@ -28,7 +26,7 @@ use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
  */
 class Config
 {
-    use StdLibTrait, SingletonTrait, CacheTrait;
+    use StdLibTrait, SingletonTrait;
 
     /**
      * Get Config object from INI file or string
