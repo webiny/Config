@@ -7,22 +7,10 @@ Install the component
 ---------------------
 The best way to install the component is using Composer.
 
-```json
-{
-    "require": {
-        "webiny/config": "1.1.*"
-    }
-}
+```bash
+composer require webiny/config
 ```
 For additional versions of the package, visit the [Packagist page](https://packagist.org/packages/webiny/config).
-
-Once you have your `composer.json` file in place, just run the install command.
-
-    $ php composer.phar install
-
-To learn more about Composer, and how to use it, please visit [this link](https://getcomposer.org/doc/01-basic-usage.md).
-
-Alternatively, you can also do a `git checkout` of the repo.
 
 ## Usage
 
@@ -58,23 +46,6 @@ If, however, you need an original config from file, you need to specify the seco
 If you don't want to use INI sections, or set custom nest delimiter, specify the following arguments:
 ```php
     $config = \Webiny\Components\Config\Config::getInstance()->ini('path/to/file.ini', false, false, '_');
-```
-
-You can save your config in any format using the following methods:
-```php
-    $config->saveAsJson($pathToFile);
-    $config->saveAsPhp($pathToFile);
-    $config->saveAsIni($pathToFile, $useSections = true, $nestDelimiter = '.');
-    $config->saveAsYaml($pathToFile, $indent = 4);
-
-    // This will save your config object to the file used when loading config
-    $config->save();
-```
-
-And you can also use custom driver:
-```php
-    $driverInstance = new MyCustomDriver();
-    $config->saveAs($driverInstance, $destination);
 ```
 
 You can get your config as string in any format using the following methods:

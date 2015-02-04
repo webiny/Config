@@ -12,10 +12,10 @@ namespace Webiny\Component\Config\Drivers;
 use Webiny\Component\Config\ConfigException;
 use Webiny\Component\StdLib\StdLibTrait;
 use Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject;
-use Webiny\Component\StdLib\StdObject\FileObject\FileObject;
+use Webiny\Component\StdLib\StdObject\StdObjectException;
 use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
-use Webiny\Component\StdLib\ValidatorTrait;
+use Webiny\Component\StdLib\StdObject\StringObject\StringObjectException;
 
 /**
  * Abstract Driver class
@@ -49,10 +49,46 @@ abstract class DriverAbstract
      * Create config driver instance
      *
      * @param null $resource Resource for driver
+     *
+     * @throws ConfigException
+     * @throws StringObjectException
      */
     public function __construct($resource = null)
     {
-        $this->_resource = $this->_normalizeResource($resource);
+        $this->_resource = $resource;
+
+        if (self::isNull($this->_resource) || !$this->_resource) {
+            throw new ConfigException('Config resource can not be NULL or FALSE! Please provide a valid file path, config string or PHP array.'
+            );
+        }
+
+        if($this->isStdObject($resource)){
+            $this->_resource = $resource->val();
+        }
+
+        if ($this->isArray($this->_resource)) {
+            return;
+        }
+
+        /**
+         * Perform string checks
+         */
+        if ($this->str($this->_resource)->trim()->length() == 0) {
+            throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.'
+            );
+        }
+
+        /**
+         * If it's a file - get its contents
+         */
+        if ($this->_isFilepath($this->_resource)) {
+            if (!$this->isFile($this->_resource)) {
+                throw new ConfigException('Invalid config file path given!');
+            }
+            $path = dirname($this->_resource);
+            $this->_resource = file_get_contents($this->_resource);
+            $this->_resource = str_replace('__DIR__', $path, $this->_resource);
+        }
     }
 
     /**
@@ -63,10 +99,8 @@ abstract class DriverAbstract
      */
     final public function getString()
     {
-        $this->_validateResource();
-
         $res = $this->_getString();
-        if(!$this->isString($res) && !$this->isStringObject($res)) {
+        if (!$this->isString($res) && !$this->isStringObject($res)) {
             throw new ConfigException('DriverAbstract method _getString() must return string or StringObject.');
         }
 
@@ -81,16 +115,11 @@ abstract class DriverAbstract
      */
     final public function getArray()
     {
-
-        try {
-            $this->_validateResource();
-        } catch (StdObjectException $e) {
-            throw new ConfigException($e->getMessage());
-        }
-
         $res = $this->_getArray();
-        if(!$this->isArray($res) && !$this->isArrayObject($res)) {
-            throw new ConfigException('DriverAbstract method _getArray() must return array or ArrayObject.');
+        if (!$this->isArray($res) && !$this->isArrayObject($res)) {
+            $errorMessage = 'DriverAbstract method _getArray() must return array or ArrayObject.';
+            $errorMessage .= ' Make sure you have provided a valid config file path with file extension.';
+            throw new ConfigException($errorMessage);
         }
 
         return StdObjectWrapper::toArray($res);
@@ -98,104 +127,24 @@ abstract class DriverAbstract
 
     /**
      * Get driver resource
-     * @return mixed Driver resource (can be: string, array, StringObject, ArrayObject, FileObject)
+     * @return mixed Driver resource (can be: string, array, StringObject, ArrayObject)
      */
     final public function getResource()
+
     {
         return $this->_resource;
     }
 
-    /**
-     * Set driver resource
-     *
-     * @param mixed $resource Driver resource (can be: string, array, StringObject, ArrayObject, FileObject)
-     *
-     * @return $this
-     */
-    final public function setResource($resource)
+    private function _isFilepath($string)
     {
-        $this->_resource = $this->_normalizeResource($resource);
-
-        return $this;
-    }
-
-    /**
-     * Write config to destination
-     *
-     * @param null|string|StringObject|FileObject $destination
-     *
-     * @throws \InvalidArgumentException
-     * @throws ConfigException
-     * @return $this
-     */
-    final public function saveToFile($destination = null)
-    {
-
-        if($this->isString($destination) || $this->isStringObject($destination)) {
-            $destination = StdObjectWrapper::toString($destination);
+        if (!$this->isString($string)) {
+            return false;
         }
 
-        if(!$this->isNull($destination)) {
-            if(!file_exists($destination)) {
-                throw new ConfigException(ConfigException::CONFIG_FILE_DOES_NOT_EXIST);
-            }
-        } else {
-            if($this->isNull($this->_resource)) {
-                throw new ConfigException('No valid resource was found to use as config target file! Specify a $destination argument or load your Config using a file resource!');
-            }
-            $destination = $this->_resource;
-        }
-
-        if(file_put_contents($destination, $this->_getString())) {
-            return $this;
-        }
-
-        throw new ConfigException(ConfigException::COULD_NOT_SAVE_CONFIG_FILE);
-    }
-
-    /**
-     * Validate given config resource and throw ConfigException if it's not valid
-     * @throws ConfigException
-     */
-    protected function _validateResource()
-    {
-        if(self::isNull($this->_resource)) {
-            throw new ConfigException('Config resource can not be NULL! Please provide a valid file path, config string or PHP array.');
-        }
-
-        if($this->isArray($this->_resource)) {
+        if (preg_match('/^([\w+-\/]+\.[a-z]{3,4}|[\w+]:\\[\w+-\\]+\.[a-z]{3,4})$/m', $string)) {
             return true;
         }
 
-        // Check if it's a valid file path
-        // Valid file path should not contain any spaces and that is the main difference between string file path and config string
-        if(!$this->str($this->_resource)->trim()->contains(' ')) {
-            if((dirname($this->_resource) != '.' && !file_exists($this->_resource)) || dirname($this->_resource) == '.') {
-                throw new ConfigException('Config resource file does not exist!');
-            }
-        }
-
-        // Perform string checks
-        if($this->str($this->_resource)->trim()->length() == 0) {
-            throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.');
-        }
+        return false;
     }
-
-    /**
-     * Normalize resource value
-     *
-     * @param mixed $resource
-     *
-     * @return mixed Normalized resource value
-     */
-    private function _normalizeResource($resource)
-    {
-        // Convert resource to native PHP type
-        if($this->isStdObject($resource)) {
-            return $resource->val();
-        }
-
-        return $resource;
-    }
-
 }

@@ -9,7 +9,6 @@ namespace Webiny\Component\Config\Drivers;
 
 use Webiny\Component\Config\ConfigException;
 use Webiny\Component\StdLib\StdObject\StdObjectException;
-use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
 use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
 
 /**
@@ -73,13 +72,7 @@ class IniDriver extends DriverAbstract
             return $this->_resource;
         }
 
-        if (file_exists($this->_resource)) {
-            $config = file_get_contents($this->_resource);
-        } else {
-            $config = $this->_resource;
-        }
-
-        return $this->_parseIniString($config);
+        return $this->_parseIniString($this->_resource);
     }
 
     /**

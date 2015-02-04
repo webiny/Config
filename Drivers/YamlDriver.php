@@ -8,10 +8,8 @@
 namespace Webiny\Component\Config\Drivers;
 
 use Webiny\Component\Config\Bridge\Yaml\Yaml;
-use Webiny\Component\Config\Bridge\Yaml\YamlAbstract;
 use Webiny\Component\Config\Bridge\Yaml\YamlInterface;
 use Webiny\Component\Config\ConfigException;
-use Webiny\Component\StdLib\ValidatorTrait;
 
 /**
  * YamlDriver is responsible for parsing Yaml config files and returning a config array.
@@ -44,9 +42,9 @@ class YamlDriver extends DriverAbstract
     {
         if (!$this->isNumber($indent)) {
             throw new ConfigException(ConfigException::MSG_INVALID_ARG, [
-                    '$indent',
-                    'integer'
-                ]
+                                                                          '$indent',
+                                                                          'integer'
+                                                                      ]
             );
         }
         $this->_indent = $indent;
@@ -74,7 +72,7 @@ class YamlDriver extends DriverAbstract
     {
         try {
             return $this->_yaml->setResource($this->_resource)->getArray();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new ConfigException($e->getMessage());
         }
     }

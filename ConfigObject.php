@@ -37,21 +37,15 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     /**
      * Config data
      *
-     * @var array
+     * @var ArrayObject
      */
-    protected $_data = array();
+    protected $_data;
 
     /**
      * Cache key used to store this object to ConfigCache
      * @var string|null
      */
     private $_cacheKey = null;
-
-    /**
-     * File resource that was used to build this config data
-     * @var string|StringObject|FileObject|null
-     */
-    private $_fileResource = null;
 
     /**
      * @var null|string
@@ -108,87 +102,6 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * SAVE METHODS
-     */
-
-    /**
-     * Save config as Yaml
-     *
-     * @param     $destination
-     * @param int $indent
-     *
-     * @internal param bool $wordWrap
-     *
-     * @return $this
-     */
-
-    public function saveAsYaml($destination, $indent = 4)
-    {
-        $driver = new YamlDriver($this->toArray());
-        $driver->setIndent($indent)->saveToFile($destination);
-
-        return $this;
-    }
-
-    public function saveAsPhp($destination)
-    {
-        $driver = new PhpDriver($this->toArray());
-        $driver->saveToFile($destination);
-
-        return $this;
-    }
-
-    public function saveAsJson($destination)
-    {
-        $driver = new JsonDriver($this->toArray());
-        $driver->saveToFile($destination);
-
-        return $this;
-    }
-
-    public function saveAsIni($destination, $useSections = true, $nestDelimiter = '.')
-    {
-        $driver = new IniDriver($this->toArray());
-        $driver->useSections($useSections)->setDelimiter($nestDelimiter)->saveToFile($destination);
-
-        return $this;
-    }
-
-    /**
-     * Save config using given DriverAbstract instance
-     *
-     * @param DriverAbstract                 $driver
-     * @param string|StringObject|FileObject $destination
-     *
-     * @return $this
-     */
-    public function saveAs(DriverAbstract $driver, $destination)
-    {
-        $driver->setResource($this->toArray())->saveToFile($destination);
-
-        return $this;
-    }
-
-    /**
-     * Save current config
-     * @throws ConfigException
-     * @return $this
-     */
-    public function save()
-    {
-        if ($this->_resourceType != ConfigObject::FILE_RESOURCE) {
-            throw new ConfigException('ConfigObject was not created from a file resource and thus can not be saved directly!'
-            );
-        }
-
-        $driver = new $this->_driverClass($this->toArray());
-        $driver->saveToFile($this->_fileResource);
-
-        return $this;
-
-    }
-
-    /**
      * Get value or return $default if there is no element set.
      * You can also access deeper values by using dotted key notation: level1.level2.level3.key
      *
@@ -235,7 +148,6 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public function __construct($resource, $cache = true)
     {
-
         $driverAbstractClassName = '\Webiny\Component\Config\Drivers\DriverAbstract';
         $arrayObjectClassName = '\Webiny\Component\StdLib\StdObject\ArrayObject\ArrayObject';
 
@@ -257,11 +169,8 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
         } else {
             $originalResource = $resource;
         }
-
-        $this->_resourceType = self::determineResourceType($originalResource);
-        if ($this->_resourceType == self::FILE_RESOURCE) {
-            $this->_fileResource = $originalResource;
-        }
+        
+        $this->_resourceType = $this->determineResourceType($originalResource);
 
         // Build internal data array from array resource
         $this->_buildInternalData($resource);
@@ -458,13 +367,18 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
      */
     public static function determineResourceType($resource)
     {
-        if (self::isArray($resource) || self::isArrayObject($resource)) {
+        if(self::isStdObject($resource)){
+            $resource = $resource->val();
+        }
+
+        if (self::isArray($resource)) {
             return self::ARRAY_RESOURCE;
-        } elseif (self::isFile($resource) || self::isFileObject($resource)) {
+        } elseif (self::isFile($resource)) {
             return self::FILE_RESOURCE;
-        } elseif (self::isString($resource) || self::isStringObject($resource)) {
+        } elseif (self::isString($resource)) {
             return self::STRING_RESOURCE;
         }
+        
         throw new ConfigException("Given ConfigObject resource is not allowed!");
     }
 
@@ -546,7 +460,6 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     {
         $data = [
             'data'         => [],
-            'fileResource' => $this->_fileResource,
             'resourceType' => $this->_resourceType,
             'driverClass'  => $this->_driverClass,
             'cacheKey'     => $this->_cacheKey
@@ -560,7 +473,6 @@ class ConfigObject implements \ArrayAccess, \IteratorAggregate
     {
         $data = unserialize($string);
         $this->_cacheKey = $data['cacheKey'];
-        $this->_fileResource = $data['fileResource'];
         $this->_driverClass = $data['driverClass'];
         $this->_resourceType = $data['resourceType'];
         $this->_data = new ArrayObject($data['data']);

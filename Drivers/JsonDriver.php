@@ -9,10 +9,6 @@ namespace Webiny\Component\Config\Drivers;
 
 use Webiny\Component\Config\ConfigException;
 use Webiny\Component\StdLib\Exception\Exception;
-use Webiny\Component\StdLib\StdObject\StdObjectException;
-use Webiny\Component\StdLib\StdObject\StdObjectWrapper;
-use Webiny\Component\StdLib\StdObject\StringObject\StringObject;
-use Webiny\Component\StdLib\ValidatorTrait;
 
 /**
  * JsonDriver is responsible for parsing JSON config files and returning a config array.
@@ -41,13 +37,7 @@ class JsonDriver extends DriverAbstract
             return $this->_resource;
         }
 
-        if (file_exists($this->_resource)) {
-            $config = file_get_contents($this->_resource);
-        } else {
-            $config = $this->_resource;
-        }
-
-        return $this->_parseJsonString($config);
+        return $this->_parseJsonString($this->_resource);
     }
 
     /**
