@@ -22,7 +22,7 @@ use Webiny\Component\StdLib\StdObject\StringObject\StringObjectException;
  *
  * @package   Webiny\Component\Config\Drivers;
  */
-abstract class DriverAbstract
+abstract class AbstractDriver
 {
     use StdLibTrait;
 
@@ -58,11 +58,10 @@ abstract class DriverAbstract
         $this->resource = $resource;
 
         if (self::isNull($this->resource) || !$this->resource) {
-            throw new ConfigException('Config resource can not be NULL or FALSE! Please provide a valid file path, config string or PHP array.'
-            );
+            throw new ConfigException('Config resource can not be NULL or FALSE! Please provide a valid file path, config string or PHP array.');
         }
 
-        if($this->isStdObject($resource)){
+        if ($this->isStdObject($resource)) {
             $this->resource = $resource->val();
         }
 
@@ -74,8 +73,7 @@ abstract class DriverAbstract
          * Perform string checks
          */
         if ($this->str($this->resource)->trim()->length() == 0) {
-            throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.'
-            );
+            throw new ConfigException('Config resource string can not be empty! Please provide a valid file path, config string or PHP array.');
         }
 
         /**
@@ -83,7 +81,7 @@ abstract class DriverAbstract
          */
         if ($this->isFilepath($this->resource)) {
             if (!$this->isFile($this->resource)) {
-                throw new ConfigException('Invalid config file path given!');
+                throw new ConfigException('Invalid config file path given: ' . $this->resource);
             }
             $path = dirname($this->resource);
             $this->resource = file_get_contents($this->resource);
@@ -101,7 +99,7 @@ abstract class DriverAbstract
     {
         $res = $this->getStringInternal();
         if (!$this->isString($res) && !$this->isStringObject($res)) {
-            throw new ConfigException('DriverAbstract method _getString() must return string or StringObject.');
+            throw new ConfigException('AbstractDriver method _getString() must return string or StringObject.');
         }
 
         return StdObjectWrapper::toString($res);
@@ -117,7 +115,7 @@ abstract class DriverAbstract
     {
         $res = $this->getArrayInternal();
         if (!$this->isArray($res) && !$this->isArrayObject($res)) {
-            $errorMessage = 'DriverAbstract method _getArray() must return array or ArrayObject.';
+            $errorMessage = 'AbstractDriver method _getArray() must return array or ArrayObject.';
             $errorMessage .= ' Make sure you have provided a valid config file path with file extension.';
             throw new ConfigException($errorMessage);
         }
